@@ -599,37 +599,35 @@
         window.addEventListener('touchstart', unlockAudio);
 
         const Utils = {
-            // TTS with fallback: speechSynthesis -> Google Translate Audio
             speak: (text) => {
                 if (!text) return;
+                resumeAudio();
 
-                // Method 1: Web Speech API (Chrome, etc.)
+                // Method 1: Web Speech API (with mobile stabilization)
                 if (window.speechSynthesis) {
                     window.speechSynthesis.cancel();
-                    const utterance = new SpeechSynthesisUtterance(text);
-                    utterance.lang = 'en-US';
-                    utterance.rate = 1.0;
-                    const voices = window.speechSynthesis.getVoices();
-                    const enVoice = voices.find(v => v.lang.includes('en') || v.lang.includes('EN'));
-                    if (enVoice) utterance.voice = enVoice;
-                    window.speechSynthesis.speak(utterance);
+
+                    if (!cachedVoice) loadVoices();
+
+                    setTimeout(() => {
+                        const utterance = new SpeechSynthesisUtterance(text);
+                        window.ttsUtterance = utterance; // Global Ref
+                        utterance.lang = 'en-US';
+                        utterance.rate = 1.0;
+                        if (cachedVoice) utterance.voice = cachedVoice;
+                        window.speechSynthesis.speak(window.ttsUtterance);
+                    }, 50);
                     return;
                 }
 
-                // Method 2: Google Translate TTS (works in ALL browsers)
+                // Method 2: Google Translate TTS Fallback
                 try {
                     const encoded = encodeURIComponent(text);
                     const url = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encoded}&tl=en&client=tw-ob`;
-
-                    // Reuse or create audio element
-                    if (!window._ttsAudio) {
-                        window._ttsAudio = new Audio();
-                    }
+                    if (!window._ttsAudio) window._ttsAudio = new Audio();
                     window._ttsAudio.src = url;
-                    window._ttsAudio.play().catch(e => console.log('TTS audio play failed:', e));
-                } catch (e) {
-                    console.log('TTS fallback error:', e);
-                }
+                    window._ttsAudio.play().catch(e => console.log('TTS fallback audio play failed:', e));
+                } catch (e) { console.log('TTS fallback error:', e); }
             },
             playSound: (type) => {
                 resumeAudio();
