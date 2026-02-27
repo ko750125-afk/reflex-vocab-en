@@ -542,18 +542,45 @@
     </div>
 
     <script>
-        // --- Audio (ssippo_hp 패턴 그대로) ---
+        // --- Audio & TTS (Proven Mobile Pattern) ---
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         let audioCtx = null;
+        let warmedUp = false;
+        let cachedVoice = null;
 
-        // Polyfill
+        // 1. webkitSpeechSynthesis Polyfill
         if (!window.speechSynthesis && window.webkitSpeechSynthesis) {
             window.speechSynthesis = window.webkitSpeechSynthesis;
+        }
+
+        function loadVoices() {
+            if (!window.speechSynthesis) return;
+            const voices = window.speechSynthesis.getVoices();
+            if (!voices.length) return;
+            const enVoices = voices.filter(v => v.lang.startsWith('en'));
+            cachedVoice = enVoices.find(v => v.name.includes('Google')) || enVoices[0] || null;
+        }
+        if (window.speechSynthesis) {
+            window.speechSynthesis.onvoiceschanged = loadVoices;
+            loadVoices();
+        }
+
+        // 2. Silent Warm-up (Unlocks audio on mobile)
+        function warmUpTTS() {
+            if (!window.speechSynthesis || warmedUp) return;
+            try {
+                const u = new SpeechSynthesisUtterance('');
+                u.volume = 0;
+                window.speechSynthesis.speak(u);
+                warmedUp = true;
+                console.log('TTS Warmed Up');
+            } catch (e) { console.error('Warmup failed', e); }
         }
 
         function resumeAudio() {
             if (!audioCtx && AudioContext) audioCtx = new AudioContext();
             if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+            warmUpTTS();
         }
 
         // --- State ---
@@ -565,6 +592,11 @@
         let selectedCards = [], matches = 0, currentBoardPairs = 0;
         let courseData = [];
         let checkedWords = JSON.parse(localStorage.getItem('reflex_mastered_v1') || '{}');
+
+        // Global Event for Unlocking
+        const unlockAudio = () => { resumeAudio(); window.removeEventListener('click', unlockAudio); window.removeEventListener('touchstart', unlockAudio); };
+        window.addEventListener('click', unlockAudio);
+        window.addEventListener('touchstart', unlockAudio);
 
         const Utils = {
             // TTS with fallback: speechSynthesis -> Google Translate Audio
