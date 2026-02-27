@@ -543,6 +543,19 @@
 
     <script src="js/utils.js"></script>
     <script>
+        let courseData = [];
+        let checkedWords = JSON.parse(localStorage.getItem('reflex_mastered_v1')) || {};
+        let currentCourseIdx = 0;
+        let mainCategory = null;
+        let currentChunk = [];
+        let chunkId = "";
+        let score = 0;
+        let timeLeft = 30;
+        let matches = 0;
+        let timerInterval = null;
+        let selectedCards = [];
+        let isProcessing = false;
+        let currentBoardPairs = 0;
 
         async function init() {
             try {
