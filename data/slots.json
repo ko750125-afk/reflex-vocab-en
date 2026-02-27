@@ -1,0 +1,295 @@
+{
+    "subjects": [
+        {
+            "kanji": "I",
+            "text": "I",
+            "meaning": "나는"
+        },
+        {
+            "kanji": "You",
+            "text": "You",
+            "meaning": "너는"
+        },
+        {
+            "kanji": "He",
+            "text": "He",
+            "meaning": "그는"
+        },
+        {
+            "kanji": "She",
+            "text": "She",
+            "meaning": "그녀는"
+        },
+        {
+            "kanji": "We",
+            "text": "We",
+            "meaning": "우리는"
+        },
+        {
+            "kanji": "They",
+            "text": "They",
+            "meaning": "그들은"
+        },
+        {
+            "kanji": "My friend",
+            "text": "My friend",
+            "meaning": "내 친구는"
+        },
+        {
+            "kanji": "The boy",
+            "text": "The boy",
+            "meaning": "소년은"
+        },
+        {
+            "kanji": "The girl",
+            "text": "The girl",
+            "meaning": "소녀는"
+        },
+        {
+            "kanji": "The teacher",
+            "text": "The teacher",
+            "meaning": "선생님은"
+        }
+    ],
+    "objects": {
+        "the book": {
+            "meaning": "책을",
+            "verbs": [
+                "read",
+                "bought",
+                "found",
+                "opened",
+                "closed"
+            ]
+        },
+        "the food": {
+            "meaning": "음식을",
+            "verbs": [
+                "ate",
+                "cooked",
+                "made",
+                "enjoyed",
+                "bought"
+            ]
+        },
+        "the water": {
+            "meaning": "물을",
+            "verbs": [
+                "drank",
+                "found",
+                "bought",
+                "needed",
+                "got"
+            ]
+        },
+        "the ball": {
+            "meaning": "공을",
+            "verbs": [
+                "kicked",
+                "threw",
+                "caught",
+                "found",
+                "hit"
+            ]
+        },
+        "the song": {
+            "meaning": "노래를",
+            "verbs": [
+                "sang",
+                "heard",
+                "enjoyed",
+                "played",
+                "made"
+            ]
+        },
+        "the letter": {
+            "meaning": "편지를",
+            "verbs": [
+                "wrote",
+                "read",
+                "sent",
+                "found",
+                "opened"
+            ]
+        },
+        "the door": {
+            "meaning": "문을",
+            "verbs": [
+                "opened",
+                "closed",
+                "found",
+                "hit",
+                "made"
+            ]
+        },
+        "the picture": {
+            "meaning": "그림을",
+            "verbs": [
+                "drew",
+                "found",
+                "made",
+                "showed",
+                "bought"
+            ]
+        },
+        "the cake": {
+            "meaning": "케이크를",
+            "verbs": [
+                "ate",
+                "made",
+                "cooked",
+                "bought",
+                "enjoyed"
+            ]
+        },
+        "the movie": {
+            "meaning": "영화를",
+            "verbs": [
+                "watched",
+                "enjoyed",
+                "made",
+                "found",
+                "showed"
+            ]
+        }
+    },
+    "verbs": [
+        {
+            "kanji": "ate",
+            "text": "ate",
+            "meaning": "먹었다"
+        },
+        {
+            "kanji": "drank",
+            "text": "drank",
+            "meaning": "마셨다"
+        },
+        {
+            "kanji": "read",
+            "text": "read",
+            "meaning": "읽었다"
+        },
+        {
+            "kanji": "wrote",
+            "text": "wrote",
+            "meaning": "썼다"
+        },
+        {
+            "kanji": "sang",
+            "text": "sang",
+            "meaning": "노래했다"
+        },
+        {
+            "kanji": "kicked",
+            "text": "kicked",
+            "meaning": "찼다"
+        },
+        {
+            "kanji": "threw",
+            "text": "threw",
+            "meaning": "던졌다"
+        },
+        {
+            "kanji": "caught",
+            "text": "caught",
+            "meaning": "잡았다"
+        },
+        {
+            "kanji": "opened",
+            "text": "opened",
+            "meaning": "열었다"
+        },
+        {
+            "kanji": "closed",
+            "text": "closed",
+            "meaning": "닫았다"
+        },
+        {
+            "kanji": "made",
+            "text": "made",
+            "meaning": "만들었다"
+        },
+        {
+            "kanji": "found",
+            "text": "found",
+            "meaning": "찾았다"
+        },
+        {
+            "kanji": "bought",
+            "text": "bought",
+            "meaning": "샀다"
+        },
+        {
+            "kanji": "drew",
+            "text": "drew",
+            "meaning": "그렸다"
+        },
+        {
+            "kanji": "cooked",
+            "text": "cooked",
+            "meaning": "요리했다"
+        },
+        {
+            "kanji": "enjoyed",
+            "text": "enjoyed",
+            "meaning": "즐겼다"
+        },
+        {
+            "kanji": "watched",
+            "text": "watched",
+            "meaning": "봤다"
+        },
+        {
+            "kanji": "showed",
+            "text": "showed",
+            "meaning": "보여줬다"
+        },
+        {
+            "kanji": "sent",
+            "text": "sent",
+            "meaning": "보냈다"
+        },
+        {
+            "kanji": "heard",
+            "text": "heard",
+            "meaning": "들었다"
+        },
+        {
+            "kanji": "hit",
+            "text": "hit",
+            "meaning": "쳤다"
+        },
+        {
+            "kanji": "played",
+            "text": "played",
+            "meaning": "연주했다"
+        },
+        {
+            "kanji": "got",
+            "text": "got",
+            "meaning": "얻었다"
+        },
+        {
+            "kanji": "needed",
+            "text": "needed",
+            "meaning": "필요했다"
+        }
+    ],
+    "failEvents": [
+        {
+            "emoji": "💥"
+        },
+        {
+            "emoji": "🔥"
+        },
+        {
+            "emoji": "💀"
+        },
+        {
+            "emoji": "⚡"
+        },
+        {
+            "emoji": "🎰"
+        }
+    ]
+}

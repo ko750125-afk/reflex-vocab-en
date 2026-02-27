@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>영어 필수 300 — REFLEX VOCAB</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Noto+Sans+KR:wght@400;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --color-bg: #0f172a;
+            --color-card-back: #1e293b;
+            --color-primary: #f43f5e;
+            --color-secondary: #10b981;
+            --color-accent: #f59e0b;
+            --color-text: #f8fafc;
+            --font-en: 'Inter', sans-serif;
+            --font-kr: 'Noto Sans KR', sans-serif;
+        }
+
+        .sub-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .folder-card {
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 16px;
+            border: 2px solid #334155;
+            cursor: pointer;
+            transition: 0.2s;
+            text-align: center;
+        }
+
+        .folder-card:hover {
+            border-color: var(--color-accent);
+            transform: translateY(-3px);
+        }
+
+        .folder-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .study-split-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+            height: 500px;
+        }
+
+        .study-column {
+            background: #1e293b;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #334155;
+            overflow: hidden;
+        }
+
+        .column-header {
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.2);
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: #94a3b8;
+            border-bottom: 1px solid #334155;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .column-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 5px;
+        }
+
+        .study-item {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            margin-bottom: 8px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            position: relative;
+            transition: 0.2s;
+        }
+
+        .to-master .study-item:hover {
+            border-color: #334155;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .study-item:active {
+            transform: scale(0.98);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .mastered .study-item {
+            opacity: 0.5;
+            border-style: dashed;
+            background: rgba(16, 185, 129, 0.05);
+        }
+
+        .study-en {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #fff;
+            font-family: var(--font-en);
+        }
+
+        .study-ko {
+            font-size: 0.8rem;
+            color: #94a3b8;
+        }
+
+        .btn-tts {
+            background: rgba(99, 102, 241, 0.2);
+            border: 2px solid rgba(99, 102, 241, 0.4);
+            border-radius: 12px;
+            width: 44px;
+            height: 44px;
+            min-width: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-tts:hover {
+            background: rgba(99, 102, 241, 0.4);
+            border-color: #6366f1;
+            transform: scale(1.1);
+        }
+
+        .btn-tts:active {
+            transform: scale(0.95);
+        }
+
+        .btn-tts svg {
+            width: 22px;
+            height: 22px;
+            fill: #a5b4fc;
+            transition: 0.2s;
+        }
+
+        .btn-tts:hover svg {
+            fill: #c7d2fe;
+        }
+
+        .mastered-badge {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+            padding: 2px 8px;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            margin-top: 5px;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 4px;
+            background: #334155;
+            border-radius: 2px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--color-secondary);
+            transition: width 0.3s ease;
+        }
+
+        .nav-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        body {
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            font-family: var(--font-kr);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            user-select: none;
+            -webkit-user-select: none;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        .header {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-nav {
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            transition: 0.2s;
+            border: 1px solid #444;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        .btn-nav:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: var(--color-accent);
+        }
+
+        .ver-badge {
+            background: #f43f5e;
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+
+        .screen {
+            display: none;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .course-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .course-card {
+            background: #1e293b;
+            border: 2px solid #334155;
+            border-radius: 16px;
+            padding: 20px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .course-card:hover {
+            border-color: var(--color-accent);
+            transform: translateY(-5px);
+            background: #273548;
+        }
+
+        .course-card h3 {
+            margin: 0;
+            color: var(--color-accent);
+            font-size: 1.2rem;
+        }
+
+        .course-card p {
+            margin: 5px 0 0;
+            font-size: 0.85rem;
+            color: #94a3b8;
+        }
+
+        .word-count-tag {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 0.7rem;
+            background: var(--color-primary);
+            color: #fff;
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+
+        .timer-bar {
+            width: 100%;
+            height: 10px;
+            background: #334155;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .timer-fill {
+            width: 100%;
+            height: 100%;
+            background: var(--color-secondary);
+            transition: width 0.1s linear;
+        }
+
+        .score-board {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            font-weight: bold;
+            color: var(--color-accent);
+        }
+
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            perspective: 1000px;
+        }
+
+        .card {
+            background: var(--color-card-back);
+            border-radius: 12px;
+            height: 90px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid #334155;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            word-break: break-all;
+            padding: 5px;
+        }
+
+        .card.en {
+            font-family: var(--font-en);
+            color: var(--color-accent);
+        }
+
+        .card.selected {
+            border-color: var(--color-secondary);
+            background: rgba(16, 185, 129, 0.2);
+            transform: scale(0.95);
+        }
+
+        .card.matched {
+            animation: popOut 0.3s forwards;
+            pointer-events: none;
+        }
+
+        @keyframes popOut {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(0);
+                opacity: 0;
+            }
+        }
+
+        .card.wrong {
+            background: var(--color-primary);
+            animation: shakeCard 0.4s;
+        }
+
+        @keyframes shakeCard {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-5px);
+            }
+
+            75% {
+                transform: translateX(5px);
+            }
+        }
+
+        .start-btn {
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            background: var(--color-secondary);
+            color: #fff;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
+        }
+
+        .start-btn:active {
+            transform: scale(0.95);
+        }
+
+        #game-over-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.98);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+
+        .result-box {
+            background: #1e293b;
+            padding: 40px;
+            border-radius: 24px;
+            border: 2px solid var(--color-accent);
+            text-align: center;
+            width: 80%;
+            max-width: 320px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="index.html" class="btn-nav">🏠 로비</a>
+            <span class="ver-badge">필수단어 300 v1.0</span>
+        </div>
+
+        <!-- 1. Category Selection -->
+        <div id="selection-screen" class="screen active">
+            <div id="course-list" class="course-grid"></div>
+            <div style="margin-top: 30px; border-top: 1px solid #334155; padding-top: 15px;">
+                <button onclick="forceUpdate()"
+                    style="background:#334155; color:#64748b; border:none; padding:8px 15px; border-radius:10px; font-size:0.7rem;">데이터
+                    강제 초기화</button>
+            </div>
+        </div>
+
+        <!-- 2. Sub-Folder Selection -->
+        <div id="subselection-screen" class="screen">
+            <div class="nav-controls">
+                <button onclick="renderCourseList()" class="btn-nav">◀ 뒤로가기</button>
+                <h2 id="category-title" style="margin:0; font-size: 1.1rem; color: var(--color-accent);"></h2>
+            </div>
+            <p style="color: #94a3b8; margin-bottom: 15px; font-size: 0.8rem;">25개씩 묶인 폴더를 선택하세요.</p>
+            <div id="sub-folder-list" class="sub-grid"></div>
+        </div>
+
+        <!-- 3. Study Screen -->
+        <div id="study-screen" class="screen">
+            <div class="nav-controls">
+                <button onclick="showSubFolders(currentCourseIdx)" class="btn-nav">◀ 폴더 목록</button>
+                <div style="text-align: right;">
+                    <span id="checked-count" style="font-size: 0.8rem; color: var(--color-accent);">0개 선택됨</span>
+                </div>
+            </div>
+            <h2 id="study-folder-title" style="color: #fff; margin-bottom: 10px; font-size: 1.1rem;"></h2>
+
+            <div class="study-split-container">
+                <div class="study-column to-master">
+                    <div class="column-header">
+                        <span>공부할 단어</span>
+                        <span id="count-unmastered" style="color:var(--color-primary);">0</span>
+                    </div>
+                    <div class="column-list" id="list-unmastered"></div>
+                </div>
+                <div class="study-column mastered">
+                    <div class="column-header">
+                        <span>아는 단어</span>
+                        <span id="count-mastered" style="color:var(--color-secondary);">0</span>
+                    </div>
+                    <div class="column-list" id="list-mastered"></div>
+                </div>
+            </div>
+
+            <button id="btn-start-game" class="start-btn" onclick="startGame()">모르는 단어로 복습 게임!</button>
+        </div>
+
+        <!-- 4. Game Screen -->
+        <div id="game-screen" class="screen">
+            <div class="score-board">SCORE: <span id="score">0</span></div>
+            <div class="timer-bar">
+                <div class="timer-fill" id="timer-fill"></div>
+            </div>
+            <div id="game-grid" class="game-grid"></div>
+            <button onclick="location.reload()"
+                style="background:none; border:none; color:#444; margin-top:20px; cursor:pointer;">그만하기</button>
+        </div>
+    </div>
+
+    <!-- Game Over Screen -->
+    <div id="game-over-screen">
+        <div class="result-box">
+            <h2 style="color: var(--color-primary); font-size: 2rem; margin: 0;">TIME OVER</h2>
+            <p style="font-size: 1.2rem; margin: 20px 0;">SCORE: <span id="final-score"
+                    style="color: var(--color-accent);">0</span></p>
+            <div style="display:flex; flex-direction:column; gap:12px;">
+                <button class="start-btn" onclick="retryGame()">다시 도전! 🔥</button>
+                <button class="start-btn" onclick="quitGame()" style="background:#334155; box-shadow:none;">공부
+                    폴더로</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Audio (ssippo_hp 패턴 그대로) ---
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        let audioCtx = null;
+
+        // Polyfill
+        if (!window.speechSynthesis && window.webkitSpeechSynthesis) {
+            window.speechSynthesis = window.webkitSpeechSynthesis;
+        }
+
+        function resumeAudio() {
+            if (!audioCtx && AudioContext) audioCtx = new AudioContext();
+            if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+        }
+
+        // --- State ---
+        let mainCategory = null;
+        let currentCourseIdx = -1;
+        let currentChunk = [];
+        let chunkId = "";
+        let score = 0, timeLeft = 30, timerInterval = null, isProcessing = false;
+        let selectedCards = [], matches = 0, currentBoardPairs = 0;
+        let courseData = [];
+        let checkedWords = JSON.parse(localStorage.getItem('reflex_mastered_v1') || '{}');
+
+        const Utils = {
+            // === TTS: EXACT COPY of ssippo_hp/js/utils.js speak() ===
+            // ssippo_hp 모바일에서 작동하는 바로 그 코드. 아무것도 추가하지 않음.
+            speak: (text) => {
+                if (!window.speechSynthesis) return;
+
+                window.speechSynthesis.cancel();
+
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'en-US';
+                utterance.rate = 1.0;
+
+                const voices = window.speechSynthesis.getVoices();
+                const enVoice = voices.find(v => v.lang.includes('en') || v.lang.includes('EN'));
+                if (enVoice) utterance.voice = enVoice;
+
+                window.speechSynthesis.speak(utterance);
+            },
+            playSound: (type) => {
+                resumeAudio();
+                if (!audioCtx) return;
+                const now = audioCtx.currentTime;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain); gain.connect(audioCtx.destination);
+
+                if (type === 'click') {
+                    osc.frequency.setValueAtTime(800, now); gain.gain.setValueAtTime(0.05, now); osc.start(now); osc.stop(now + 0.05);
+                } else if (type === 'mastery') {
+                    osc.type = 'sine';
+                    const frequencies = [523.25, 659.25, 783.99];
+                    frequencies.forEach((freq, idx) => { osc.frequency.setValueAtTime(freq, now + (idx * 0.06)); });
+                    gain.gain.setValueAtTime(0, now);
+                    gain.gain.linearRampToValueAtTime(0.12, now + 0.05);
+                    gain.gain.linearRampToValueAtTime(0, now + 0.35);
+                    osc.start(now); osc.stop(now + 0.35);
+                } else if (type === 'unmastery') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(400, now);
+                    osc.frequency.exponentialRampToValueAtTime(200, now + 0.15);
+                    gain.gain.setValueAtTime(0, now);
+                    gain.gain.linearRampToValueAtTime(0.05, now + 0.02);
+                    gain.gain.linearRampToValueAtTime(0, now + 0.15);
+                    osc.start(now); osc.stop(now + 0.15);
+                } else if (type === 'wrong') {
+                    osc.type = 'sawtooth'; osc.frequency.setValueAtTime(120, now); gain.gain.setValueAtTime(0.1, now); osc.start(now); osc.stop(now + 0.2);
+                } else if (type === 'match') {
+                    osc.frequency.setValueAtTime(523, now); gain.gain.setValueAtTime(0.1, now); osc.start(now); osc.stop(now + 0.3);
+                }
+            }
+        };
+
+        async function init() {
+            try {
+                const url = 'data/vocab_courses.json?v=' + Date.now();
+                const resp = await fetch(url);
+                if (!resp.ok) throw new Error("Network response was not ok: " + resp.status);
+                const data = await resp.json();
+                if (!data || !data.courses) throw new Error("JSON data is missing 'courses' field");
+                courseData = data.courses || [];
+                renderCourseList();
+            } catch (e) {
+                console.error("Init error:", e);
+                document.getElementById('course-list').innerHTML = `
+                    <div style="padding:40px; text-align:center; color:#f43f5e; background:rgba(244,63,94,0.1); border-radius:20px; border:1px solid var(--color-primary);">
+                        <div style="font-size:3rem; margin-bottom:10px;">⚠️</div>
+                        <div style="font-weight:bold; margin-bottom:5px;">데이터를 불러올 수 없습니다.</div>
+                        <div style="font-size:0.7rem; opacity:0.8;">${e.message}</div>
+                        <button onclick="location.reload()" style="margin-top:20px; padding:10px 20px; border-radius:10px; border:none; background:var(--color-primary); color:#fff; cursor:pointer;">다시 시도</button>
+                    </div>
+                `;
+            }
+        }
+
+        function forceUpdate() {
+            localStorage.clear();
+            location.href = location.href.split('?')[0] + '?v=' + Date.now();
+        }
+
+        function renderCourseList() {
+            const list = document.getElementById('course-list');
+            let totalMastered = 0;
+            let totalWords = 0;
+
+            const courseHtml = courseData.map((c, i) => {
+                let masteredInCourse = 0;
+                const courseWords = c.words;
+                totalWords += courseWords.length;
+                const chunkCount = Math.ceil(courseWords.length / 25);
+                for (let ci = 0; ci < chunkCount; ci++) {
+                    const cId = `${c.id}_${ci}`;
+                    masteredInCourse += (checkedWords[cId] || []).length;
+                }
+                totalMastered += masteredInCourse;
+                const percent = (masteredInCourse / courseWords.length) * 100;
+                const isFinished = percent === 100;
+                const cardStyle = isFinished ? 'border-color: #ffcc00; box-shadow: 0 0 25px rgba(255, 204, 0, 0.3); background: rgba(255,204,0,0.1);' : '';
+                const progressColor = isFinished ? '#ffcc00' : 'var(--color-secondary)';
+
+                return `
+                <div class="course-card" onclick="showSubFolders(${i})" style="${cardStyle}">
+                    <span class="word-count-tag" style="${isFinished ? 'background:#ffcc00; color:#000;' : ''}">${isFinished ? '🏆 올클리어' : courseWords.length + ' 단어'}</span>
+                    <h3 style="margin-bottom:10px; color:${isFinished ? '#ffcc00' : '#fff'};">${c.title}</h3>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+                        <span style="font-size:0.85rem; color:${progressColor}; font-weight:bold;">${masteredInCourse} / ${courseWords.length} 정복</span>
+                        <span style="font-size:0.85rem; color:#64748b;">${Math.round(percent)}%</span>
+                    </div>
+                    <div class="progress-container" style="background:rgba(0,0,0,0.3); margin-top:0;">
+                        <div class="progress-bar" style="width: ${percent}%; background:${progressColor};"></div>
+                    </div>
+                </div>`;
+            }).join('');
+
+            const totalPercent = totalWords > 0 ? (totalMastered / totalWords) * 100 : 0;
+            const headerHtml = `
+                <div style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); padding: 25px; border-radius: 20px; margin-bottom: 20px; border: 2px solid var(--color-accent); text-align: left; box-shadow: 0 10px 20px rgba(0,0,0,0.3);">
+                    <div style="font-size: 1.2rem; font-weight: bold; color: var(--color-accent); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                        <span>🔥</span> 영어 필수 단어 챌린지
+                    </div>
+                    <div style="display: flex; align-items: baseline; gap: 10px;">
+                        <span style="font-size: 2.2rem; font-weight: 800; color: #fff;">${totalMastered}</span>
+                        <span style="font-size: 1rem; color: #475569;">/ ${totalWords} 단어</span>
+                        <span style="margin-left: auto; font-size: 1.2rem; font-weight: bold; color: var(--color-accent);">${Math.round(totalPercent)}%</span>
+                    </div>
+                    <div class="progress-container" style="height: 10px; margin-top: 15px; background: #334155;">
+                        <div class="progress-bar" style="width: ${totalPercent}%; background: linear-gradient(90deg, #10b981, #34d399);"></div>
+                    </div>
+                </div>
+                <button onclick="startAllWordsChallenge()" style="width:100%; padding:20px; border-radius:16px; background:linear-gradient(90deg, #f43f5e, #fb7185); color:#fff; border:none; font-weight:bold; font-size:1.1rem; cursor:pointer; margin-bottom:20px; box-shadow:0 0 15px rgba(244,63,94,0.4); display:flex; align-items:center; justify-content:center; gap:10px;">
+                    <span>🏆</span> 전체 300단어 랜덤 챌린지 (ENDLESS)
+                </button>
+            `;
+
+            list.innerHTML = headerHtml + courseHtml;
+            switchScreen('selection');
+        }
+
+        function showSubFolders(idx) {
+            Utils.playSound('click');
+            currentCourseIdx = idx;
+            mainCategory = courseData[idx];
+            const list = document.getElementById('sub-folder-list');
+            document.getElementById('category-title').textContent = mainCategory.title;
+
+            const chunks = [];
+            for (let i = 0; i < mainCategory.words.length; i += 25) {
+                chunks.push(mainCategory.words.slice(i, i + 25));
+            }
+
+            list.innerHTML = chunks.map((chunk, i) => {
+                const cId = `${mainCategory.id}_${i}`;
+                const masteredCount = (checkedWords[cId] || []).length;
+                const totalCount = chunk.length;
+                const percent = (masteredCount / totalCount) * 100;
+                const isFinished = percent === 100;
+                const cardStyle = isFinished
+                    ? 'border-color: #ffcc00; box-shadow: 0 0 25px rgba(255, 204, 0, 0.5); background: rgba(255, 204, 0, 0.15);'
+                    : 'border-color: #334155; background: rgba(30, 41, 59, 0.5);';
+                const icon = isFinished ? '💰' : '📁';
+                const folderColor = isFinished ? '#ffcc00' : '#94a3b8';
+                const badgeStyle = isFinished ? 'background:#ffcc00; color:#000; font-weight:800;' : 'background:#334155; color:#94a3b8;';
+
+                return `
+                <div class="folder-card" onclick="startStudy(${i})" style="${cardStyle}">
+                    <span class="folder-icon" style="opacity: ${isFinished ? 1 : 0.6}; filter: ${isFinished ? 'drop-shadow(0 0 8px #ffcc00)' : 'none'}">${icon}</span>
+                    <div style="font-weight:bold; color:${folderColor};">폴더 ${i + 1}</div>
+                    <div style="font-size:0.7rem; color:${isFinished ? '#b45309' : '#64748b'};">${i * 25 + 1} ~ ${Math.min((i + 1) * 25, mainCategory.words.length)}번</div>
+                    <div class="mastered-badge" style="${badgeStyle}">${masteredCount} / ${totalCount} 정복</div>
+                    <div class="progress-container" style="background:rgba(0,0,0,0.2); height:6px;">
+                        <div class="progress-bar" style="width: ${percent}%; background: ${isFinished ? '#fff' : 'var(--color-primary)'}; box-shadow: ${isFinished ? '0 0 10px #fff' : 'none'};"></div>
+                    </div>
+                </div>`;
+            }).join('');
+            switchScreen('subselection');
+        }
+
+        function startStudy(chunkIdx) {
+            Utils.playSound('click');
+            const startIdx = chunkIdx * 25;
+            currentChunk = mainCategory.words.slice(startIdx, startIdx + 25);
+            chunkId = `${mainCategory.id}_${chunkIdx}`;
+            document.getElementById('study-folder-title').textContent = `${mainCategory.title} - 폴더 ${chunkIdx + 1}`;
+            renderStudyList();
+            switchScreen('study');
+        }
+
+        function renderStudyList() {
+            const listUnmastered = document.getElementById('list-unmastered');
+            const listMastered = document.getElementById('list-mastered');
+            const myMastered = checkedWords[chunkId] || [];
+
+            const unmasteredWords = currentChunk.filter(w => !myMastered.includes(w.en));
+            const masteredWords = currentChunk.filter(w => myMastered.includes(w.en));
+
+            document.getElementById('count-unmastered').textContent = unmasteredWords.length;
+            document.getElementById('count-mastered').textContent = masteredWords.length;
+            document.getElementById('checked-count').textContent = `${masteredWords.length} / ${currentChunk.length} 정복`;
+
+            const speakerSVG = '<svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>';
+
+            const createItemCard = (w, isMastered) => `
+                <div class="study-item" onclick="toggleCheck('${w.en}')" style="cursor:pointer;" title="${isMastered ? '모르는 단어로' : '아는 단어로'}">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div style="min-width: 0; flex: 1;">
+                            <div class="study-en">${w.en}</div>
+                            <div class="study-ko">${w.ko}</div>
+                        </div>
+                        <button class="btn-tts" onclick="event.stopPropagation(); Utils.speak('${w.en}')" title="발음 듣기">
+                            ${speakerSVG}
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            listUnmastered.innerHTML = unmasteredWords.length ? unmasteredWords.map(w => createItemCard(w, false)).join('')
+                : '<div style="color:#10b981; font-weight:bold; font-size:0.8rem; padding:30px; text-align:center;">🎉 모든 단어를 정복했습니다!</div>';
+
+            listMastered.innerHTML = masteredWords.length ? masteredWords.map(w => createItemCard(w, true)).join('')
+                : '<div style="color:#475569; font-size:0.7rem; padding:20px;">아는 단어를 눌러보세요</div>';
+
+            const btnGame = document.getElementById('btn-start-game');
+            if (unmasteredWords.length < 2) {
+                btnGame.style.opacity = '0.5';
+                btnGame.style.pointerEvents = 'none';
+                btnGame.textContent = unmasteredWords.length === 0 ? "🎉 올 클리어! 공부 완료" : "단어가 부족합니다 (최소 2개)";
+            } else {
+                btnGame.style.opacity = '1';
+                btnGame.style.pointerEvents = 'auto';
+                btnGame.textContent = "모르는 단어로 복습 게임!";
+            }
+        }
+
+        function toggleCheck(en) {
+            if (!checkedWords[chunkId]) checkedWords[chunkId] = [];
+            const idx = checkedWords[chunkId].indexOf(en);
+            if (idx > -1) {
+                checkedWords[chunkId].splice(idx, 1);
+                Utils.playSound('unmastery');
+            } else {
+                checkedWords[chunkId].push(en);
+                Utils.playSound('mastery');
+            }
+            localStorage.setItem('reflex_mastered_v1', JSON.stringify(checkedWords));
+            renderStudyList();
+        }
+
+        function switchScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id + '-screen').classList.add('active');
+        }
+
+        function startGame() {
+            if (currentChunk.length < 2) { alert("복습할 단어가 부족합니다. (최소 2개 이상)"); return; }
+            Utils.playSound('click'); switchScreen('game');
+            score = 0; timeLeft = 30; matches = 0;
+            updateScore(); generateBoard(); startTimer();
+        }
+
+        function startTimer() {
+            const fill = document.getElementById('timer-fill');
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                timeLeft -= 0.1;
+                if (timeLeft <= 0) { clearInterval(timerInterval); gameOver(); return; }
+                fill.style.width = (timeLeft / 30 * 100) + '%';
+            }, 100);
+        }
+
+        function generateBoard() {
+            const grid = document.getElementById('game-grid'); grid.innerHTML = '';
+            const myMastered = checkedWords[chunkId] || [];
+            matches = 0;
+            const unmastered = currentChunk.filter(w => !myMastered.includes(w.en)).sort(() => Math.random() - 0.5);
+            const mastered = currentChunk.filter(w => myMastered.includes(w.en)).sort(() => Math.random() - 0.5);
+            const pool = [...unmastered, ...mastered].slice(0, 6);
+            currentBoardPairs = pool.length;
+            renderBoardFromPool(pool);
+        }
+
+        function renderBoardFromPool(pool) {
+            const grid = document.getElementById('game-grid'); grid.innerHTML = '';
+            let cards = [];
+            pool.forEach(w => {
+                cards.push({ id: w.en, text: w.en, type: 'en' });
+                cards.push({ id: w.en, text: w.ko, type: 'ko' });
+            });
+            cards.sort(() => Math.random() - 0.5).forEach(c => {
+                const el = document.createElement('div');
+                el.className = `card ${c.type}`; el.textContent = c.text;
+                el.onclick = () => handleCardClick(el, c);
+                grid.appendChild(el);
+            });
+        }
+
+        function handleCardClick(el, data) {
+            if (isProcessing || el.classList.contains('matched') || el.classList.contains('selected')) return;
+            Utils.playSound('click');
+            if (data.type === 'en') Utils.speak(data.id);
+            el.classList.add('selected'); selectedCards.push({ el, data });
+            if (selectedCards.length === 2) { isProcessing = true; checkMatch(); }
+        }
+
+        function checkMatch() {
+            const [c1, c2] = selectedCards;
+            if (c1.data.id === c2.data.id) {
+                Utils.playSound('match');
+                setTimeout(() => {
+                    c1.el.classList.add('matched'); c2.el.classList.add('matched');
+                    matches++;
+                    score += 10; timeLeft += 3; updateScore();
+                    isProcessing = false; selectedCards = [];
+                    if (matches >= currentBoardPairs) {
+                        setTimeout(() => { generateBoard(); }, 500);
+                    }
+                }, 300);
+            } else {
+                Utils.playSound('wrong');
+                setTimeout(() => {
+                    c1.el.classList.add('wrong'); c2.el.classList.add('wrong');
+                    setTimeout(() => {
+                        c1.el.classList.remove('wrong', 'selected');
+                        c2.el.classList.remove('wrong', 'selected');
+                        isProcessing = false; selectedCards = [];
+                    }, 400);
+                }, 300);
+            }
+        }
+
+        function updateScore() { document.getElementById('score').textContent = score; }
+        function gameOver() {
+            if (timerInterval) clearInterval(timerInterval);
+            document.getElementById('final-score').textContent = score;
+            document.getElementById('game-over-screen').style.display = 'flex';
+        }
+
+        function startAllWordsChallenge() {
+            currentChunk = courseData.reduce((acc, course) => acc.concat(course.words), []);
+            chunkId = "all_words_challenge";
+            startGame();
+        }
+
+        function retryGame() {
+            document.getElementById('game-over-screen').style.display = 'none';
+            startGame();
+        }
+
+        function quitGame() {
+            document.getElementById('game-over-screen').style.display = 'none';
+            if (chunkId === "all_words_challenge") { renderCourseList(); }
+            else { switchScreen('study'); }
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+
+</html>
