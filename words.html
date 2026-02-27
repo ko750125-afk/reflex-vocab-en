@@ -567,22 +567,37 @@
         let checkedWords = JSON.parse(localStorage.getItem('reflex_mastered_v1') || '{}');
 
         const Utils = {
-            // === TTS: EXACT COPY of ssippo_hp/js/utils.js speak() ===
-            // ssippo_hp 모바일에서 작동하는 바로 그 코드. 아무것도 추가하지 않음.
+            // TTS with fallback: speechSynthesis -> Google Translate Audio
             speak: (text) => {
-                if (!window.speechSynthesis) return;
+                if (!text) return;
 
-                window.speechSynthesis.cancel();
+                // Method 1: Web Speech API (Chrome, etc.)
+                if (window.speechSynthesis) {
+                    window.speechSynthesis.cancel();
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    utterance.lang = 'en-US';
+                    utterance.rate = 1.0;
+                    const voices = window.speechSynthesis.getVoices();
+                    const enVoice = voices.find(v => v.lang.includes('en') || v.lang.includes('EN'));
+                    if (enVoice) utterance.voice = enVoice;
+                    window.speechSynthesis.speak(utterance);
+                    return;
+                }
 
-                const utterance = new SpeechSynthesisUtterance(text);
-                utterance.lang = 'en-US';
-                utterance.rate = 1.0;
+                // Method 2: Google Translate TTS (works in ALL browsers)
+                try {
+                    const encoded = encodeURIComponent(text);
+                    const url = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encoded}&tl=en&client=tw-ob`;
 
-                const voices = window.speechSynthesis.getVoices();
-                const enVoice = voices.find(v => v.lang.includes('en') || v.lang.includes('EN'));
-                if (enVoice) utterance.voice = enVoice;
-
-                window.speechSynthesis.speak(utterance);
+                    // Reuse or create audio element
+                    if (!window._ttsAudio) {
+                        window._ttsAudio = new Audio();
+                    }
+                    window._ttsAudio.src = url;
+                    window._ttsAudio.play().catch(e => console.log('TTS audio play failed:', e));
+                } catch (e) {
+                    console.log('TTS fallback error:', e);
+                }
             },
             playSound: (type) => {
                 resumeAudio();
