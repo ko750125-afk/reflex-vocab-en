@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TTS 진단 테스트</title>
+    <style>
+        body {
+            background: #111;
+            color: #fff;
+            font-family: sans-serif;
+            padding: 20px;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 20px;
+            margin: 10px 0;
+            font-size: 1.2rem;
+            border: 2px solid #444;
+            border-radius: 12px;
+            background: #222;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        button:active {
+            background: #444;
+        }
+
+        .success {
+            border-color: #4bff4b;
+        }
+
+        .info {
+            border-color: #4b9fff;
+        }
+
+        #log {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 0.8rem;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        h2 {
+            color: #ff6b6b;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>🔊 TTS 진단 테스트</h2>
+    <p>아래 버튼을 눌러보세요. 소리가 나는지 확인합니다.</p>
+
+    <button onclick="testBasic('en')" class="success">테스트 1: 영어 (Hello World)</button>
+    <button onclick="testBasic('ja')" class="success">테스트 2: 일본어 (こんにちは)</button>
+    <button onclick="testBasic('ko')" class="success">테스트 3: 한국어 (안녕하세요)</button>
+    <button onclick="testWithLang()" class="info">테스트 4: lang='en-US' 지정</button>
+    <button onclick="testNoLang()" class="info">테스트 5: lang 없이 영어</button>
+    <button onclick="testWithVoice()" class="info">테스트 6: 영어 Voice 지정</button>
+    <button onclick="showVoices()" style="border-color: #ffb74b;">음성 목록 보기</button>
+
+    <div id="log">결과가 여기에 나옵니다...\n</div>
+
+    <script>
+        const logEl = document.getElementById('log');
+        function log(msg) {
+            logEl.textContent += msg + '\n';
+            logEl.scrollTop = logEl.scrollHeight;
+        }
+
+        function testBasic(lang) {
+            log(`\n--- 테스트: ${lang} ---`);
+            try {
+                const synth = window.speechSynthesis;
+                if (!synth) { log('❌ speechSynthesis 없음!'); return; }
+
+                synth.cancel();
+
+                const texts = { en: 'Hello World', ja: 'こんにちは', ko: '안녕하세요' };
+                const langs = { en: 'en-US', ja: 'ja-JP', ko: 'ko-KR' };
+
+                const u = new SpeechSynthesisUtterance(texts[lang]);
+                u.lang = langs[lang];
+                u.rate = 1.0;
+
+                u.onstart = () => log(`✅ ${lang} 시작됨!`);
+                u.onend = () => log(`✅ ${lang} 완료!`);
+                u.onerror = (e) => log(`❌ ${lang} 에러: ${e.error}`);
+
+                log(`speaking: "${texts[lang]}" (lang=${langs[lang]})`);
+                synth.speak(u);
+                log(`speak() 호출됨. pending=${synth.pending}, speaking=${synth.speaking}`);
+            } catch (e) {
+                log(`❌ 예외: ${e.message}`);
+            }
+        }
+
+        function testWithLang() {
+            log('\n--- 테스트 4: lang=en-US 지정 ---');
+            const synth = window.speechSynthesis;
+            synth.cancel();
+            const u = new SpeechSynthesisUtterance('apple banana cherry');
+            u.lang = 'en-US';
+            u.onstart = () => log('✅ 시작!');
+            u.onend = () => log('✅ 완료!');
+            u.onerror = (e) => log('❌ 에러: ' + e.error);
+            synth.speak(u);
+            log('speak() called');
+        }
+
+        function testNoLang() {
+            log('\n--- 테스트 5: lang 없이 영어 ---');
+            const synth = window.speechSynthesis;
+            synth.cancel();
+            const u = new SpeechSynthesisUtterance('apple banana cherry');
+            // lang을 설정하지 않음
+            u.onstart = () => log('✅ 시작!');
+            u.onend = () => log('✅ 완료!');
+            u.onerror = (e) => log('❌ 에러: ' + e.error);
+            synth.speak(u);
+            log('speak() called (no lang set)');
+        }
+
+        function testWithVoice() {
+            log('\n--- 테스트 6: voice 지정 ---');
+            const synth = window.speechSynthesis;
+            synth.cancel();
+            const voices = synth.getVoices();
+            log(`사용 가능한 음성: ${voices.length}개`);
+
+            const enVoice = voices.find(v => v.lang.includes('en'));
+            if (enVoice) {
+                log(`영어 음성 발견: ${enVoice.name} (${enVoice.lang})`);
+                const u = new SpeechSynthesisUtterance('apple banana cherry');
+                u.voice = enVoice;
+                u.lang = enVoice.lang;
+                u.onstart = () => log('✅ 시작!');
+                u.onend = () => log('✅ 완료!');
+                u.onerror = (e) => log('❌ 에러: ' + e.error);
+                synth.speak(u);
+            } else {
+                log('❌ 영어 음성을 찾을 수 없음!');
+                // lang=en-US로만 시도
+                const u = new SpeechSynthesisUtterance('apple banana cherry');
+                u.lang = 'en-US';
+                u.onstart = () => log('✅ fallback 시작!');
+                u.onend = () => log('✅ fallback 완료!');
+                u.onerror = (e) => log('❌ fallback 에러: ' + e.error);
+                synth.speak(u);
+            }
+        }
+
+        function showVoices() {
+            log('\n--- 음성 목록 ---');
+            const voices = window.speechSynthesis.getVoices();
+            log(`총 ${voices.length}개 음성:`);
+            voices.forEach((v, i) => {
+                log(`  ${i}: ${v.name} | ${v.lang} | ${v.localService ? 'local' : 'network'}`);
+            });
+            if (voices.length === 0) {
+                log('⚠️ 음성이 0개입니다!');
+                log('voiceschanged 이벤트를 기다립니다...');
+                speechSynthesis.onvoiceschanged = () => {
+                    const v2 = speechSynthesis.getVoices();
+                    log(`voiceschanged 후: ${v2.length}개`);
+                    v2.forEach((v, i) => {
+                        log(`  ${i}: ${v.name} | ${v.lang} | ${v.localService ? 'local' : 'network'}`);
+                    });
+                };
+            }
+        }
+
+        // 자동으로 음성 목록 로드 시도
+        log('speechSynthesis 지원: ' + (!!window.speechSynthesis));
+        if (window.speechSynthesis) {
+            const v = window.speechSynthesis.getVoices();
+            log('초기 음성 수: ' + v.length);
+        }
+    </script>
+</body>
+
+</html>
