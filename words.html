@@ -594,7 +594,23 @@
         let checkedWords = JSON.parse(localStorage.getItem('reflex_mastered_v1') || '{}');
 
         // Global Event for Unlocking
-        const unlockAudio = () => { resumeAudio(); window.removeEventListener('click', unlockAudio); window.removeEventListener('touchstart', unlockAudio); };
+        const unlockAudio = () => {
+            resumeAudio();
+            // Aggressive Unlock: Speak a short silent space synchronously
+            if (window.speechSynthesis) {
+                const u = new SpeechSynthesisUtterance(' ');
+                u.volume = 0;
+                window.speechSynthesis.speak(u);
+            }
+            // Initialize fallback audio
+            if (!window._ttsAudio) {
+                window._ttsAudio = new Audio();
+                window._ttsAudio.load();
+            }
+            console.log('Audio Engine Unlocked via Gesture');
+            window.removeEventListener('click', unlockAudio);
+            window.removeEventListener('touchstart', unlockAudio);
+        };
         window.addEventListener('click', unlockAudio);
         window.addEventListener('touchstart', unlockAudio);
 
@@ -603,20 +619,22 @@
                 if (!text) return;
                 resumeAudio();
 
-                // Method 1: Web Speech API (with mobile stabilization)
+                // Method 1: Web Speech API (NO DELAY for strict gesture requirements)
                 if (window.speechSynthesis) {
                     window.speechSynthesis.cancel();
-
                     if (!cachedVoice) loadVoices();
 
-                    setTimeout(() => {
-                        const utterance = new SpeechSynthesisUtterance(text);
-                        window.ttsUtterance = utterance; // Global Ref
-                        utterance.lang = 'en-US';
-                        utterance.rate = 1.0;
-                        if (cachedVoice) utterance.voice = cachedVoice;
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    window.ttsUtterance = utterance; // Global Ref
+                    utterance.lang = 'en-US';
+                    utterance.rate = 1.0;
+                    if (cachedVoice) utterance.voice = cachedVoice;
+
+                    try {
                         window.speechSynthesis.speak(window.ttsUtterance);
-                    }, 50);
+                    } catch (e) {
+                        console.error('SpeechSynthesis.speak failed:', e);
+                    }
                     return;
                 }
 
